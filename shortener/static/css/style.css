@@ -1,0 +1,8 @@
+.invalid-feedback {
+    display: flex;
+    align-items: center;
+    height: 20px;
+    box-sizing: border-box;
+    padding-left: 15px;
+    font-size: 15px;
+}
