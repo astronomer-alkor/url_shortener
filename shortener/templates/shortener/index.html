@@ -4,30 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-reboot.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Url shortener</title>
 </head>
 <body class="bg-light">
-<div class="container">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-            <input type="text" name="long_url" value="{{ form.data.long_url }}" class="form-control" aria-describedby="basic-addon3"
-                   placeholder="Введите свою длинную ссылку">
-            <div class="invalid-feedback">{{ form.errors.long_url.as_text }}</div>
-        </div>
-        <div class="mb-3">
-            <input type="text" name="custom_url" value="{{ form.data.custom_url }}" class="form-control" aria-describedby="basic-addon3"
-                   placeholder="Введите свое имя для ссылки">
-            <div class="invalid-feedback">{{ form.errors.custom_url.as_text }}</div>
-        </div>
-        <button type="submit" class="btn btn-primary">Сгенерировать</button>
-    </form>
-    <h1>{{ short_url }}</h1>
-</div>
+<header class="d-flex justify-content-end p-3 mb-3 bg-white border-bottom box-shadow">
+    <a href="" class="btn btn-outline-primary mr-3">Вход</a>
+    <a href="" class="btn btn-outline-primary">Регистрация</a>
+    <a href="" class="btn btn-outline-primary">Выход</a>
+</header>
+<main>
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="long_url" value="{{ form.data.long_url }}" class="form-control"
+                           aria-describedby="basic-addon3"
+                           placeholder="Введите свою длинную ссылку">
+                    <button type="submit" class="btn btn-primary">Сгенерировать</button>
+
+                </div>
+                <div class="invalid-feedback">{{ form.errors.long_url.as_text }}</div>
+            </div>
+            <div class="mb-3">
+                <input type="text" name="custom_url" value="{{ form.data.custom_url }}" class="form-control"
+                       aria-describedby="basic-addon3"
+                       placeholder="Введите свое имя для ссылки">
+                <div class="invalid-feedback">{{ form.errors.custom_url.as_text }}</div>
+            </div>
+        </form>
+        {% if short_url %}
+            <div class="input-group mt-3">
+                <input class="form-control" id="short_url" type="text" value="{{ short_url }}">
+                <span class="input-group-button">
+                <button class="copy_btn" id="copy_short_url" type="button" data-clipboard-demo=""
+                        data-clipboard-target="#short_url">
+                    <img class="clippy" src="{% static 'img/clippy.svg' %}" width="13" alt="Скопировать">
+                </button>
+            </span>
+            </div>
+        {% endif %}
+    </div>
+</main>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -37,5 +58,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script src="{% static 'js/clipboard.min.js' %}"></script>
+<script>
+    var clipboard = new ClipboardJS('#copy_short_url');
+</script>
 </body>
 </html>

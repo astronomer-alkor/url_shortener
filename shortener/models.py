@@ -9,3 +9,10 @@ class Url(models.Model):
     @staticmethod
     def is_short_url_exist(short_url):
         return True if Url.objects.filter(short_url=short_url) else False
+
+    @staticmethod
+    def get_url_object(short_url):
+        url = Url.objects.filter(short_url=short_url)
+        if url:
+            return url[0]
+        return None
