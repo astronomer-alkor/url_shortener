@@ -1,4 +1,6 @@
+from hashlib import sha256
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Url(models.Model):
@@ -16,3 +18,25 @@ class Url(models.Model):
         if url:
             return url[0]
         return None
+
+
+def encrypt_password(password):
+    return sha256(password.encode()).hexdigest()
+
+
+def sign_up(data):
+    password = encrypt_password(data['password'])
+    user = User.objects.create(username=data['username'],
+                               email=data['email'],
+                               password=password)
+    user.save()
+    return user
+
+
+def get_user(data):
+    password = encrypt_password(data['password'])
+    user = User.objects.filter(username=data['username'],
+                               password=password)
+    if user:
+        return user[0]
+    return None

@@ -6,14 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Url shortener</title>
 </head>
 <body class="bg-light">
 <header class="d-flex justify-content-end p-3 mb-3 bg-white border-bottom box-shadow">
-    <a href="" class="btn btn-outline-primary mr-3">Вход</a>
-    <a href="" class="btn btn-outline-primary">Регистрация</a>
-    <a href="" class="btn btn-outline-primary">Выход</a>
+    {% if user.is_authenticated %}
+        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#confirm_logout_modal">
+            Выход
+        </button>
+    {% else %}
+        <button type="button" class="btn btn-outline-primary mr-3" data-toggle="modal" data-target="#sign_up_modal">
+            Регистрация
+        </button>
+        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#sign_in_modal">Вход
+        </button>
+    {% endif %}
 </header>
 <main>
     <div class="container">
@@ -24,7 +33,7 @@
                     <input type="text" name="long_url" value="{{ form.data.long_url }}" class="form-control"
                            aria-describedby="basic-addon3"
                            placeholder="Введите свою длинную ссылку">
-                    <button type="submit" class="btn btn-primary">Сгенерировать</button>
+                    <button name="generate_url" type="submit" class="btn btn-primary">Сгенерировать</button>
 
                 </div>
                 <div class="invalid-feedback">{{ form.errors.long_url.as_text }}</div>
@@ -49,6 +58,135 @@
         {% endif %}
     </div>
 </main>
+<div class="modal fade" id="sign_in_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <article class="card-body">
+                <button class="float-right btn btn-outline-primary" data-toggle="modal" data-target="#sign_up_modal"
+                   data-dismiss="modal">Регистрация</button>
+                <h4 class="card-title mb-4 mt-1">Вход</h4>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                            </div>
+                            <input name="username" value="{{ sign_in_form.data.username }}" class="form-control"
+                                   placeholder="Логин"
+                                   type="text">
+                        </div>
+                        <div class="invalid-feedback">{% firstof sign_in_form.errors.username.as_text sign_in_form.non_field_errors.as_text %}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <input name="password" class="form-control" placeholder="Пароль" type="password">
+                        </div>
+                        <div class="invalid-feedback">{% firstof sign_in_form.errors.password.as_text sign_in_form.non_field_errors.as_text %}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button name="sign_in" type="submit" class="btn btn-primary btn-block">Вход</button>
+                            </div>
+                        </div>
+{#                        <div class="col-md-6 text-right">#}
+{#                            <a class="small" href="#">Забыли пароль?</a>#}
+{#                        </div>#}
+                    </div>
+                </form>
+            </article>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="sign_up_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <article class="card-body">
+                <h4 class="card-title mb-4 mt-1">Регистрация</h4>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                            </div>
+                            <input name="username" value="{{ sign_up_form.data.username }}" class="form-control"
+                                   placeholder="Логин" type="text" autocomplete="off">
+                        </div>
+                        <div class="invalid-feedback">{{ sign_up_form.errors.username.as_text }}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                            </div>
+                            <input name="email" value="{{ sign_up_form.data.email }}" class="form-control"
+                                   placeholder="E-mail" type="email">
+                        </div>
+                        <div class="invalid-feedback">{{ sign_up_form.errors.email.as_text }}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <input name="password" class="form-control" placeholder="Пароль" type="password"
+                                   autocomplete="off">
+                        </div>
+                        <div class="invalid-feedback">{% firstof sign_up_form.errors.password.as_text sign_up_form.non_field_errors.as_text %}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <input name="password2" class="form-control" placeholder="Повторите пароль" type="password"
+                                   autocomplete="off">
+                        </div>
+                        <div class="invalid-feedback">{% firstof sign_up_form.errors.password.as_text sign_up_form.non_field_errors.as_text %}</div>
+                    </div>
+                    <div class="form-group">
+                        <button name="sign_up" type="submit" class="btn btn-primary btn-block">Создать аккаунт</button>
+                    </div>
+                    <p class="text-center">Уже есть аккаунт?
+                        <button class="btn btn-link" data-toggle="modal" data-target="#sign_in_modal"
+                                data-dismiss="modal">Вход
+                        </button>
+                    </p>
+                </form>
+            </article>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirm_logout_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <article class="card-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Вы действительно хотите выйти?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-primary mr-3" data-dismiss="modal">Нет</button>
+                        <button name="logout" type="submit" class="btn btn-secondary">Да</button>
+                    </form>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -62,5 +200,18 @@
 <script>
     var clipboard = new ClipboardJS('#copy_short_url');
 </script>
+{% if sign_up_form %}
+    <script>
+        $(window).on('load', function () {
+            $('#sign_up_modal').modal('show');
+        });
+    </script>
+{% elif sign_in_form %}
+    <script>
+        $(window).on('load', function () {
+            $('#sign_in_modal').modal('show');
+        });
+    </script>
+{% endif %}
 </body>
 </html>

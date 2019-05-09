@@ -32,3 +32,7 @@ input {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
+.modal-dialog {
+    max-width: 400px;
+}
