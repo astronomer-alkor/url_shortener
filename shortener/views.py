@@ -12,8 +12,9 @@ def index(request):
             form = ShortUrlForm(request.POST)
             short_url = ''
             if form.is_valid():
-                short_url = '/'.join((request.get_host(),
-                                      generate_short_url(request.POST['long_url'], request.POST['custom_url'])))
+                author = request.user if request.user.is_authenticated else None
+                short_url = generate_short_url(request.POST['long_url'], request.POST['custom_url'], author)
+                short_url = '/'.join((request.get_host(), short_url))
             return render(request, 'shortener/index.html', {'form': form,
                                                             'short_url': short_url,
                                                             'user': request.user})
@@ -42,4 +43,13 @@ def redirect_short_url(request, url):
     url_object = Url.get_url_object(url)
     if url_object:
         return redirect(url_object.long_url)
-    raise Http404()
+    raise Http404
+
+
+def get_statistics(request, url):
+    if request.user.is_authenticated:
+        url_data = Url.get_url_object(short_url=url, author=request.user)
+        if url_data:
+            print(url_data)
+            return render(request, 'shortener/url_statistics.html', {'user': request.user})
+    raise Http404

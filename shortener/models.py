@@ -7,14 +7,18 @@ class Url(models.Model):
     process_id = models.IntegerField(null=True)
     long_url = models.URLField()
     short_url = models.CharField(max_length=20)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     @staticmethod
     def is_short_url_exist(short_url):
         return Url.objects.filter(short_url=short_url)
 
     @staticmethod
-    def get_url_object(short_url):
-        url = Url.objects.filter(short_url=short_url)
+    def get_url_object(short_url, author=None):
+        if author:
+            url = Url.objects.filter(short_url=short_url, author=author)
+        else:
+            url = Url.objects.filter(short_url=short_url)
         if url:
             return url[0]
         return None
