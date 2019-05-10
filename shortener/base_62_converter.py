@@ -13,12 +13,13 @@ def true_ord(char):
     from the number system with base [BASE] into an integer.
     """
 
+    ans = ord(char) - LOWERCASE_OFFSET
     if char.isdigit():
-        return ord(char) - DIGIT_OFFSET
+        ans = ord(char) - DIGIT_OFFSET
     elif 'A' <= char <= 'Z':
-        return ord(char) - UPPERCASE_OFFSET
-    elif 'a' <= char <= 'z':
-        return ord(char) - LOWERCASE_OFFSET
+        ans = ord(char) - UPPERCASE_OFFSET
+
+    return ans
 
 
 def true_chr(integer):
@@ -26,12 +27,13 @@ def true_chr(integer):
     Turns an integer [integer] into digit in base [BASE]
     as a character representation.
     """
+    ans = chr(integer + LOWERCASE_OFFSET)
     if integer < 10:
-        return chr(integer + DIGIT_OFFSET)
+        ans = chr(integer + DIGIT_OFFSET)
     elif 10 <= integer <= 35:
-        return chr(integer + UPPERCASE_OFFSET)
-    elif 36 <= integer < 62:
-        return chr(integer + LOWERCASE_OFFSET)
+        ans = chr(integer + UPPERCASE_OFFSET)
+
+    return ans
 
 
 def saturate(key):

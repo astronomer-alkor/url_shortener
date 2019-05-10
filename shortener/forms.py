@@ -19,12 +19,13 @@ class CustomUrlField(forms.CharField):
     def validate(self, value):
         if not value:
             return None
-        if len(value) > 20:
+        elif len(value) > 20:
             raise ValidationError('Максимальная длина - 20 символов')
         elif Url.is_short_url_exist(value):
             raise ValidationError('Ссылка уже занята')
         elif not re.match(r'[a-zA-z0-9_\-]+', value):
             raise ValidationError('Неверный формат. Корректные символы: a-z A-z 0-9 _ -')
+        return None
 
 
 class UsernameField(forms.CharField):
@@ -88,6 +89,7 @@ class SignUpForm(forms.Form):
             return None
         if password != password2:
             raise ValidationError("Пароли не совпадают")
+        return None
 
 
 class SignInForm(forms.Form):
@@ -102,3 +104,4 @@ class SignInForm(forms.Form):
                 raise ValidationError('Неверные логин или пароль')
         except KeyError:
             return None
+        return None

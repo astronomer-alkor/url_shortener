@@ -18,7 +18,6 @@ def index(request):
                                                             'short_url': short_url,
                                                             'user': request.user})
         elif 'sign_up' in request.POST:
-            print(request.POST)
             form = SignUpForm(request.POST)
             if form.is_valid():
                 user = sign_up(form.cleaned_data)
@@ -27,7 +26,6 @@ def index(request):
             return render(request, 'shortener/index.html', {'sign_up_form': form,
                                                             'user': request.user})
         elif 'sign_in' in request.POST:
-            print(request.POST)
             form = SignInForm(request.POST)
             if form.is_valid():
                 user = get_user(form.cleaned_data)
@@ -36,7 +34,6 @@ def index(request):
             return render(request, 'shortener/index.html', {'sign_in_form': form,
                                                             'user': request.user})
         elif 'logout' in request.POST:
-            print(request.POST)
             logout(request)
     return render(request, 'shortener/index.html', {'user': request.user})
 
