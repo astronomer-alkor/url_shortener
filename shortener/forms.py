@@ -3,7 +3,7 @@ from string import ascii_letters, digits
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Url, encrypt_password
+from .models import Url
 
 
 class UrlField(forms.CharField):
@@ -100,7 +100,7 @@ class SignInForm(forms.Form):
         cleaned_data = self.cleaned_data
         try:
             if not User.objects.filter(username=cleaned_data['username'],
-                                       password=encrypt_password(cleaned_data['password'])):
+                                       password=cleaned_data['password']):
                 raise ValidationError('Неверные логин или пароль')
         except KeyError:
             return None

@@ -1,6 +1,8 @@
 from hashlib import sha256
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from .mail_sender import send_account_activation
 
 
 class Url(models.Model):
@@ -24,23 +26,54 @@ class Url(models.Model):
         return None
 
 
-def encrypt_password(password):
-    return sha256(password.encode()).hexdigest()
+class UrlConfirmation(models.Model):
+    url = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @staticmethod
+    def create_url(user):
+        unique_string = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S.%f') + user.username
+        url = sha256(unique_string.encode()).hexdigest()
+        url = UrlConfirmation.objects.create(url=url, user=user)
+        url.save()
+        return url
+
+    @staticmethod
+    def get_url_by_user(user):
+        url_object = UrlConfirmation.objects.filter(user=user)
+        if url_object:
+            return url_object[0]
+
+    @staticmethod
+    def get_url(url):
+        url_object = UrlConfirmation.objects.filter(url=url)
+        if url_object:
+            return url_object[0]
+
+    @staticmethod
+    def delete_url(user):
+        UrlConfirmation.objects.filter(user=user).delete()
 
 
-def sign_up(data):
-    password = encrypt_password(data['password'])
+def create_url(request, user):
+    url = UrlConfirmation.create_url(user)
+    return '/'.join((request.get_host(), 'activation', f'?key={url.url}'))
+
+
+def sign_up(data, request):
     user = User.objects.create(username=data['username'],
                                email=data['email'],
-                               password=password)
+                               password=data['password'])
+    user.is_active = False
+    url = create_url(request, user)
+    send_account_activation(email=data['email'], username=data['username'], url=url)
     user.save()
     return user
 
 
 def get_user(data):
-    password = encrypt_password(data['password'])
     user = User.objects.filter(username=data['username'],
-                               password=password)
+                               password=data['password'])
     if user:
         return user[0]
     return None

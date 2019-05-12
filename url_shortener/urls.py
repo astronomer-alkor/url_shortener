@@ -15,12 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.urls import include
-from shortener.views import redirect_short_url, get_statistics
+from shortener.views import (
+    index,
+    redirect_short_url,
+    get_statistics,
+    activate_account
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('shortener.urls')),
-    path('<url>', redirect_short_url),
-    path('<url>/statistics', get_statistics),
+    path('', index, name='index'),
+    path('<url>', redirect_short_url, name='redirect_short_url'),
+    path('<url>/statistics', get_statistics, name='get_statistics'),
+    path('activation/', activate_account, name='activate_account'),
 ]
