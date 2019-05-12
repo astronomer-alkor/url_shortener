@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.http import Http404
 from django.contrib.auth import login, logout
 from .forms import ShortUrlForm, SignUpForm, SignInForm
@@ -72,3 +72,9 @@ def activate_account(request):
             return redirect('index')
         raise Http404
     raise Http404
+
+
+def handler404(request, exception, template_name="404.html"):
+    response = render_to_response("404.html")
+    response.status_code = 404
+    return response

@@ -29,3 +29,5 @@ urlpatterns = [
     path('<url>/statistics', get_statistics, name='get_statistics'),
     path('activation/', activate_account, name='activate_account'),
 ]
+
+handler404 = 'shortener.views.handler404'

@@ -36,3 +36,7 @@ input {
 .modal-dialog {
     max-width: 400px;
 }
+
+.page-wrap {
+    min-height: 100vh;
+}
