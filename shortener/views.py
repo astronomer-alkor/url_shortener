@@ -40,6 +40,8 @@ def index(request):
             response_data.update(sign_in_form=form)
         elif 'logout' in request.POST:
             logout(request)
+        elif 'restoration' in request.POST:
+            print(request.POST)
     return render(request, 'shortener/index.html', {'user': request.user,
                                                     'response_data': response_data})
 

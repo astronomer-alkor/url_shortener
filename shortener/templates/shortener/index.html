@@ -61,9 +61,7 @@
     </div>
 </main>
 {% if user.is_authenticated %}
-    <div class="modal fade" id="confirm_logout_modal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="confirm_logout_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <article class="card-body">
@@ -82,8 +80,7 @@
         </div>
     </div>
 {% else %}
-    <div class="modal fade" id="sign_in_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="sign_in_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <article class="card-body">
@@ -121,17 +118,18 @@
                                     <button name="sign_in" type="submit" class="btn btn-primary btn-block">Вход</button>
                                 </div>
                             </div>
-                            {#                        <div class="col-md-6 text-right">#}
-                            {#                            <a class="small" href="#">Забыли пароль?</a>#}
-                            {#                        </div>#}
+                            <div class="col-md-6 text-right">
+                                <button class="btn btn-link" data-toggle="modal" data-target="#restoration_modal" data-dismiss="modal">
+                                    Забыли пароль?
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </article>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="sign_up_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="sign_up_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <article class="card-body">
@@ -196,11 +194,37 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="restoration_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <article class="card-body">
+                    <h4 class="card-title mb-4 mt-1">Восстановление пароля</h4>
+                    <hr>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="restoration_email">Укажите почту, к которой привязан аккаунт</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                                </div>
+                                <input name="email" value="{{ response_data.restoration_form.data.email }}"
+                                       class="form-control" id="restoration_email" placeholder="E-mail" type="email">
+                            </div>
+                            <div class="invalid-feedback">{{ response_data.restoration_form.errors.email.as_text }}</div>
+                        </div>
+                        <div class="form-group">
+                            <button name="restoration" type="submit" class="btn btn-primary btn-block">Восстановить
+                            </button>
+                        </div>
+                    </form>
+                </article>
+            </div>
+        </div>
+    </div>
 {% endif %}
 {% if response_data.email_confirmation %}
-    <div class="modal fade" id="email_confirmation_modal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="email_confirmation_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -218,9 +242,7 @@
     </div>
 {% endif %}
 {% if response_data.success_registration %}
-    <div class="modal fade" id="success_registration_modal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="success_registration_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -238,9 +260,7 @@
     </div>
 {% endif %}
 {% if response_data.congratulation %}
-    <div class="modal fade" id="congratulation_modal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="congratulation_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
