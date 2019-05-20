@@ -209,9 +209,9 @@
                                     <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                                 </div>
                                 <input name="email" value="{{ response_data.restoration_form.data.email }}"
-                                       class="form-control" id="restoration_email" placeholder="E-mail" type="email">
+                                       class="form-control" id="restoration_email" placeholder="E-mail" type="text">
                             </div>
-                            <div class="invalid-feedback">{{ response_data.restoration_form.errors.email.as_text }}</div>
+                            <div class="invalid-feedback">{% firstof response_data.restoration_form.errors.email.as_text response_data.restoration_form.non_field_errors.as_text %}</div>
                         </div>
                         <div class="form-group">
                             <button name="restoration" type="submit" class="btn btn-primary btn-block">Восстановить
@@ -314,6 +314,12 @@
     <script>
         $(window).on('load', function () {
             $('#congratulation_modal').modal('show');
+        });
+    </script>
+{% elif response_data.restoration %}
+    <script>
+        $(window).on('load', function () {
+            $('#restoration_modal').modal('show');
         });
     </script>
 {% endif %}

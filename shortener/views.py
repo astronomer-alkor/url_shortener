@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.http import Http404
 from django.contrib.auth import login, logout
-from .forms import ShortUrlForm, SignUpForm, SignInForm
+from .forms import ShortUrlForm, SignUpForm, SignInForm, RestorationForm
 from .url_utils import generate_short_url
 from .models import Url, UrlConfirmation, sign_up, get_user
 
@@ -41,7 +41,13 @@ def index(request):
         elif 'logout' in request.POST:
             logout(request)
         elif 'restoration' in request.POST:
-            print(request.POST)
+            form = RestorationForm(request.POST)
+            if form.is_valid():
+                form = None
+            else:
+                response_data.update(restoration=True)
+            response_data.update(restoration_form=form)
+
     return render(request, 'shortener/index.html', {'user': request.user,
                                                     'response_data': response_data})
 

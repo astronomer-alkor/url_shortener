@@ -10,7 +10,7 @@ class UrlField(forms.CharField):
     def validate(self, value):
         super().validate(value)
         if not re.match(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}'
-                          r'\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)', value):
+                        r'\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)', value):
             raise ValidationError('Неверная ссылка')
 
 
@@ -100,4 +100,16 @@ class SignInForm(forms.Form):
                 raise ValidationError('Неверные логин или пароль')
         except KeyError:
             return None
-        return None
+
+
+class RestorationForm(forms.Form):
+    email = EmailField()
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        try:
+            if not User.objects.filter(email=cleaned_data['email']):
+                raise ValidationError('Неверный E-mail')
+        except KeyError:
+            return None
+
