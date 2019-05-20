@@ -8,9 +8,8 @@ from .models import Url
 
 class UrlField(forms.CharField):
     def validate(self, value):
-        if not value:
-            raise ValidationError('Поле обязательно для заполнения')
-        elif not re.match(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}'
+        super().validate(value)
+        if not re.match(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}'
                           r'\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)', value):
             raise ValidationError('Неверная ссылка')
 
@@ -34,9 +33,8 @@ class UsernameField(forms.CharField):
         self.write = write
 
     def validate(self, value):
-        if not value:
-            raise ValidationError('Поле обязательно для заполнения')
-        elif self.write:
+        super().validate(value)
+        if self.write:
             if not set(value).issubset(set(ascii_letters + digits + '-_.')):
                 raise ValidationError('Неверный формат. Корректные символы: a-z A-z 0-9 _ - .')
             elif len(value) < 5:
@@ -53,9 +51,8 @@ class EmailField(forms.CharField):
         self.write = write
 
     def validate(self, value):
-        if not value:
-            raise ValidationError('Поле обязательно для заполнения')
-        elif self.write:
+        super().validate(value)
+        if self.write:
             if not re.match(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)', value):
                 raise ValidationError('Некорректный E-mail')
             elif User.objects.filter(email=value):
@@ -65,8 +62,7 @@ class EmailField(forms.CharField):
 class PasswordField(forms.CharField):
     # Todo: доделать валидацию пароля
     def validate(self, value):
-        if not value:
-            raise ValidationError('Поле обязательно для заполнения')
+        super().validate(value)
 
 
 class ShortUrlForm(forms.Form):
