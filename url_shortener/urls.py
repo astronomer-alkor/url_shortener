@@ -19,7 +19,8 @@ from shortener.views import (
     index,
     redirect_short_url,
     get_statistics,
-    activate_account
+    activate_account,
+    password_restoration
 )
 
 urlpatterns = [
@@ -28,6 +29,7 @@ urlpatterns = [
     path('<url>', redirect_short_url, name='redirect_short_url'),
     path('<url>/statistics', get_statistics, name='get_statistics'),
     path('activation/', activate_account, name='activate_account'),
+    path('restore/', password_restoration, name='password_restoration')
 ]
 
 handler404 = 'shortener.views.handler404'

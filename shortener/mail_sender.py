@@ -18,3 +18,21 @@ def send_account_activation(email, username, url):
                    'korotynski.alexey@gmail.com',
                    [email],
                    html_message=template)
+
+
+def send_password_restoration(email, username, url):
+    template = f'''
+            <html>
+                <head>
+                </head>
+                <body>
+                    Здравствуйте, <b>{username}</b>. Вот ваша ссылка для восстановления пароля.<br>
+                    {url}
+                </body>
+            </html>
+            '''
+    mail.send_mail('Восстановление пароля',
+                   strip_tags(template),
+                   'korotynski.alexey@gmail.com',
+                   [email],
+                   html_message=template)

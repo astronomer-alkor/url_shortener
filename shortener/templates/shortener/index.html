@@ -119,8 +119,8 @@
                                 </div>
                             </div>
                             <div class="col-md-6 text-right">
-                                <button class="btn btn-link" data-toggle="modal" data-target="#restoration_modal" data-dismiss="modal">
-                                    Забыли пароль?
+                                <button class="btn btn-link" data-toggle="modal" data-target="#restoration_modal"
+                                        data-dismiss="modal">Забыли пароль?
                                 </button>
                             </div>
                         </div>
@@ -273,6 +273,21 @@
         </div>
     </div>
 {% endif %}
+{% if response_data.restoration_form_success %}
+    <div class="modal fade" id="restoration_success_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    На вашу почту <b>{{ response_data.email }}</b> было отправлено письмо.
+                    Для смены пароля перейдите по ссылке, указанной в письме.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -316,10 +331,16 @@
             $('#congratulation_modal').modal('show');
         });
     </script>
-{% elif response_data.restoration %}
+{% elif response_data.restoration_form_error %}
     <script>
         $(window).on('load', function () {
             $('#restoration_modal').modal('show');
+        });
+    </script>
+{% elif response_data.restoration_form_success %}
+    <script>
+        $(window).on('load', function () {
+            $('#restoration_success_modal').modal('show');
         });
     </script>
 {% endif %}

@@ -14,9 +14,10 @@ from .forms import (
 from .url_utils import generate_short_url
 from .models import (
     Url,
-    UrlConfirmation,
+    UrlManagement,
     sign_up,
-    get_user
+    get_user,
+    restore_password
 )
 
 
@@ -35,6 +36,7 @@ def index(request):
                 short_url = generate_short_url(request.POST['long_url'], request.POST['custom_url'], author)
                 short_url = '/'.join((request.get_host(), short_url))
             response_data.update(shortener_form=form, short_url=short_url)
+
         elif 'sign_up' in request.POST:
             form = SignUpForm(request.POST)
             if form.is_valid():
@@ -42,6 +44,7 @@ def index(request):
                 form = None
                 response_data.update(success_registration=True, email=user.email)
             response_data.update(sign_up_form=form)
+
         elif 'sign_in' in request.POST:
             form = SignInForm(request.POST)
             if form.is_valid():
@@ -52,14 +55,19 @@ def index(request):
                     response_data.update(email=user.email, email_confirmation=True)
                 form = None
             response_data.update(sign_in_form=form)
+
         elif 'logout' in request.POST:
             logout(request)
+
         elif 'restoration' in request.POST:
             form = RestorationForm(request.POST)
             if form.is_valid():
+                email = form.cleaned_data.get('email')
+                restore_password(request, email)
                 form = None
+                response_data.update(restoration_form_success=True, email=email)
             else:
-                response_data.update(restoration=True)
+                response_data.update(restoration_form_error=True)
             response_data.update(restoration_form=form)
 
     return render(request, 'shortener/index.html', {'user': request.user,
@@ -84,11 +92,11 @@ def get_statistics(request, url):
 def activate_account(request):
     key = request.GET.get('key', '')
     if key:
-        url = UrlConfirmation.get_url(key)
+        url = UrlManagement.get_url(key)
         if url:
             url.user.is_active = True
             url.user.save()
-            UrlConfirmation.delete_url(url.user)
+            UrlManagement.delete_url(url.user)
             login(request, url.user)
             request.session['data'] = {'congratulation': True}
             return redirect('index')
@@ -100,3 +108,8 @@ def handler404(request, exception, template_name="404.html"):
     response = render_to_response("404.html")
     response.status_code = 404
     return response
+
+
+def password_restoration(request):
+    # Todo
+    pass
