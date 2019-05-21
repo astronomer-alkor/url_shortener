@@ -1,9 +1,23 @@
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import (
+    render,
+    redirect,
+    render_to_response
+)
 from django.http import Http404
 from django.contrib.auth import login, logout
-from .forms import ShortUrlForm, SignUpForm, SignInForm, RestorationForm
+from .forms import (
+    ShortUrlForm,
+    SignUpForm,
+    SignInForm,
+    RestorationForm
+)
 from .url_utils import generate_short_url
-from .models import Url, UrlConfirmation, sign_up, get_user
+from .models import (
+    Url,
+    UrlConfirmation,
+    sign_up,
+    get_user
+)
 
 
 def index(request):
